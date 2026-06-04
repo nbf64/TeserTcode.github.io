@@ -391,37 +391,37 @@
     }
     function autoMove(){
         let preBoard = board;
-        let preScore = score;
+        let preScore = scoreTally;
         let maxScoreGain = 0;
-        let moveMade = "";
+        let moveMade = "u";
         moveAndMerge('u');
-        if (score - preScore > maxScoreGain){
-            maxScoreGain = score - preScore;
+        if (scoreTally - preScore > maxScoreGain){
+            maxScoreGain = scoreTally - preScore;
             moveMade = 'u';
         }
         board = preBoard;
-        score = preScore;
+        scoreTally = preScore;
         moveAndMerge('d');
-        if (score - preScore > maxScoreGain){
-            maxScoreGain = score - preScore;
+        if (scoreTally - preScore > maxScoreGain){
+            maxScoreGain = scoreTally - preScore;
             moveMade = 'd';
         }
         board = preBoard;
-        score = preScore;
+        scoreTally = preScore;
         moveAndMerge('l');
-        if (score - preScore > maxScoreGain){
-            maxScoreGain = score - preScore;
+        if (scoreTally - preScore > maxScoreGain){
+            maxScoreGain = scoreTally - preScore;
             moveMade = 'l';
         }
         board = preBoard;
-        score = preScore;
+        scoreTally = preScore;
         moveAndMerge('r');
-        if (score - preScore > maxScoreGain){
-            maxScoreGain = score - preScore;
+        if (scoreTally - preScore > maxScoreGain){
+            maxScoreGain = scoreTally - preScore;
             moveMade = 'r';
         }
         board = preBoard;
-        score = preScore;
+        scoreTally = preScore;
         moveAndMerge(moveMade);
     }
     function toggleAutoPlay() {
