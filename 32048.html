@@ -232,7 +232,7 @@
 <script>
     let gameRows = 4, gameCols = 4, board = [], scoreTally = {};
     let highscoreTally = localStorage.getItem('10k_high_tally') ? JSON.parse(localStorage.getItem('10k_high_tally')) : {};
-    let difficulty = 2, currentLevel = -10000, eventType = 'upgrade';
+    let difficulty = 0, currentLevel = -10000, eventType = 'none';
     let autoPlay = false, autoInterval = null, autoSpeed = 150;
 
     const els = {
