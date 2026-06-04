@@ -425,7 +425,7 @@
         let nc = Math.max(2, Math.min(100, parseInt(document.getElementById('colsInput').value) || 4));
         let nr = Math.max(2, Math.min(100, parseInt(document.getElementById('rowsInput').value) || 4));
         let ns = Math.max(-10000, parseInt(document.getElementById('startLevelInput').value) || -10000);
-        autoSpeed = Math.max(0, parseInt(document.getElementById('autoSpeedInput').value) || 150);
+        autoSpeed = Math.max(0, parseInt(document.getElementById('autoSpeedInput').value));
         eventType = document.getElementById('eventTypeInput').value;
         els.stats.style.display = document.getElementById('showStatsToggle').checked ? 'block' : 'none';
         document.getElementById('settingsMenu').style.display = 'none';
