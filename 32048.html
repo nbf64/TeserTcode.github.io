@@ -393,7 +393,7 @@
         let preBoard = board;
         let preScore = scoreTally;
         let maxScoreGain = 0;
-        let moveMade = "u";
+        let moveMade = ['u','d','l','r'][Math.floor(Math.random()*4)];
         moveAndMerge('u');
         if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) > maxScoreGain){
             maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
