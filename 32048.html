@@ -369,6 +369,7 @@
         }
         for(let r=0; r<(4-rots)%4; r++) board = rotate(board);
         if(moved) handleEvents();
+        return moved;
     }
 
     function checkState() {
@@ -388,12 +389,20 @@
         scoreTally = {}; els.overlay.style.display = 'none'; els.winOverlay.style.display = 'none';
         spawnRandomTile(); spawnRandomTile(); drawBoard();
     }
-
+    function autoMove(){
+        if !moveAndMerge('u'){
+            if !moveAndMerge('l'){
+               if !moveAndMerge('r'){
+                    moveAndMerge('d');
+               }
+            }
+        }
+    }
     function toggleAutoPlay() {
         autoPlay = !autoPlay;
         if(autoPlay) {
             els.autoBtn.innerText = "AUTO ON"; els.autoBtn.style.background = "#ff4444";
-            autoInterval = setInterval(() => { moveAndMerge(['u','d','l','r'][Math.floor(Math.random()*4)]); }, autoSpeed);
+            autoInterval = setInterval(() => { autoMove(); }, autoSpeed);
         } else {
             els.autoBtn.innerText = "AUTO OFF"; els.autoBtn.style.background = "#34d9d6";
             clearInterval(autoInterval);
