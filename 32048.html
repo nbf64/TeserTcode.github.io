@@ -361,7 +361,7 @@
                 if(f[k] === f[k-1]) {
                     f[k]++; addScore(f[k]);
                     if(f[k] > currentLevel) currentLevel = f[k];
-                    f[k-1] = 0; moved = true;
+                    f[k-1] = 'e'; moved = true;
                 }
             }
             let nr = f.filter(v => v !== 'e');
