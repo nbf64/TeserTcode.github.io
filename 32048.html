@@ -218,6 +218,7 @@
         <select id="eventTypeInput">
             <option selected value="upgrade">UPGRADE</option>
             <option value="explode">EXPLODE</option>
+            <option value="none">NONE</option>
         </select>
     </div>
     <div class="settings-option"><label>AUTO SPEED (ms)</label><input type="number" id="autoSpeedInput" value="150" min="1"></div>
@@ -426,7 +427,7 @@
         let nc = Math.max(2, Math.min(10, parseInt(document.getElementById('colsInput').value) || 4));
         let nr = Math.max(2, Math.min(10, parseInt(document.getElementById('rowsInput').value) || 4));
         let ns = Math.max(-10000, parseInt(document.getElementById('startLevelInput').value) || -10000);
-        autoSpeed = Math.max(50, parseInt(document.getElementById('autoSpeedInput').value) || 150);
+        autoSpeed = Math.max(0, parseInt(document.getElementById('autoSpeedInput').value) || 150);
         eventType = document.getElementById('eventTypeInput').value;
         els.stats.style.display = document.getElementById('showStatsToggle').checked ? 'block' : 'none';
         document.getElementById('settingsMenu').style.display = 'none';
@@ -443,7 +444,7 @@
         if(keys[e.key]) { e.preventDefault(); moveAndMerge(keys[e.key]); }
     });
 
-    resetGame(-10000, 2, 4, 4);
+    resetGame(-10000, 0, 4, 4);
 </script>
 </body>
 </html>
