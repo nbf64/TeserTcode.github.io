@@ -210,8 +210,8 @@
 
 <div id="settingsMenu">
     <h2>MATRIX CONSOLE</h2>
-    <div class="settings-option"><label>COLS (M)</label><input type="number" id="colsInput" value="4" min="2" max="10"></div>
-    <div class="settings-option"><label>ROWS (N)</label><input type="number" id="rowsInput" value="4" min="2" max="10"></div>
+    <div class="settings-option"><label>COLS (M)</label><input type="number" id="colsInput" value="4" min="2" max="100"></div>
+    <div class="settings-option"><label>ROWS (N)</label><input type="number" id="rowsInput" value="4" min="2" max="100"></div>
     <div class="settings-option"><label>START LEVEL</label><input type="number" id="startLevelInput" value="-10000" step="1"></div>
     <div class="settings-option"><label>DIFFICULTY</label><input type="number" id="diffInput" value="2" min="0"></div>
     <div class="settings-option"><label>EVENT TYPE</label>
@@ -359,7 +359,6 @@
             for(let k=f.length-1; k>0; k--) {
                 if(f[k] === f[k-1]) {
                     f[k]++; addScore(f[k]);
-                    if(f[k] > currentLevel) currentLevel = f[k];
                     f[k-1] = 'e'; moved = true;
                 }
             }
@@ -423,8 +422,8 @@
     
     document.getElementById('closeSettingsBtn').addEventListener('click', () => document.getElementById('settingsMenu').style.display = 'none');
     document.getElementById('applySettingsBtn').addEventListener('click', () => {
-        let nc = Math.max(2, Math.min(10, parseInt(document.getElementById('colsInput').value) || 4));
-        let nr = Math.max(2, Math.min(10, parseInt(document.getElementById('rowsInput').value) || 4));
+        let nc = Math.max(2, Math.min(100, parseInt(document.getElementById('colsInput').value) || 4));
+        let nr = Math.max(2, Math.min(100, parseInt(document.getElementById('rowsInput').value) || 4));
         let ns = Math.max(-10000, parseInt(document.getElementById('startLevelInput').value) || -10000);
         autoSpeed = Math.max(0, parseInt(document.getElementById('autoSpeedInput').value) || 150);
         eventType = document.getElementById('eventTypeInput').value;
