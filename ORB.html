@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>3D Orbital Viewer with Scaling</title>
+<style>
+body { margin:0; overflow:hidden; }
+#controls{
+    position:absolute;
+    top:10px; left:10px;
+    background:rgba(255,255,255,0.85);
+    padding:10px;
+    font-family:Arial,sans-serif;
+    border-radius:6px;
+    width:280px;
+}
+select,input,button{ width:100%; margin:4px 0; }
+label{ font-size:13px; }
+</style>
+</head>
+
+<body>
+<div id="controls">
+    <label>Harmonic</label>
+    <select id="harmonicType">
+        <option value="sphericalharmonic">standard</option>
+        <option value="sphericalharmonicacoustic">acoustic</option>
+        <option value="sphericalharmonicgeodesy">geodesy</option>
+        <option value="sphericalharmonicmagnetics">magnetics</option>
+    </select>
+
+    <label>Color & Height</label>
+    <select id="colorMode">
+        <option value="re">Re(z)</option>
+        <option value="re2">Re(z)²</option>
+        <option value="im">Im(z)</option>
+        <option value="im2">Im(z)²</option>
+        <option value="abs2">z·conj(z)</option>
+        <option value="arg">arg(z)</option>
+    </select>
+
+    <label>Scale (exponent)</label>
+    <input type="range" id="scaleSlider" min="-10" max="10" step="0.1" value="0">
+
+    <label><input type="checkbox" id="fractional"> fractional l,m</label>
+
+    <div id="integerLM">
+        <label>l</label>
+        <select id="l"></select>
+        <label>m</label>
+        <select id="m"></select>
+    </div>
+
+    <div id="fractionalLM" style="display:none">
+        <label>l (complex)</label>
+        <input id="l_re" placeholder="Re(l)">
+        <input id="l_im" placeholder="Im(l)">
+        <label>m (complex)</label>
+        <input id="m_re" placeholder="Re(m)">
+        <input id="m_im" placeholder="Im(m)">
+    </div>
+
+    <button id="update">Update</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.1/math.min.js"></script>
+<script src="clrspc.js"></script>
+<script src="mthfnc.js"></script>
+
+<script>
+/* ---------- scene ---------- */
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,1000);
+camera.position.z = 5;
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+const dl=new THREE.DirectionalLight(0xffffff,0.7);
+dl.position.set(1,1,1);
+scene.add(dl);
+
+let mesh=null;
+
+/* ---------- UI ---------- */
+const lSel=document.getElementById("l");
+const mSel=document.getElementById("m");
+const scaleSlider=document.getElementById("scaleSlider");
+
+for(let i=0;i<=20;i++){
+    let o=document.createElement("option");
+    o.value=i; o.text=i;
+    lSel.appendChild(o);
+}
+
+function updateM(){
+    mSel.innerHTML="";
+    let l=parseInt(lSel.value);
+    for(let m=-l;m<=l;m++){
+        let o=document.createElement("option");
+        o.value=m; o.text=m;
+        mSel.appendChild(o);
+    }
+}
+lSel.onchange=updateM;
+updateM();
+
+fractional.onchange=e=>{
+    integerLM.style.display=e.target.checked?"none":"block";
+    fractionalLM.style.display=e.target.checked?"block":"none";
+};
+
+/* ---------- helpers ---------- */
+function hsv2rgb(h,s,v){
+    let c=v*s, x=c*(1-Math.abs((h/60)%2-1)), m=v-c;
+    let r=0,g=0,b=0;
+    if(h<60){r=c;g=x;}
+    else if(h<120){r=x;g=c;}
+    else if(h<180){g=c;b=x;}
+    else if(h<240){g=x;b=c;}
+    else if(h<300){r=x;b=c;}
+    else{r=c;b=x;}
+    return [r+m,g+m,b+m];
+}
+
+/* ---------- orbital ---------- */
+function createOrbital(){
+    if(mesh) scene.remove(mesh);
+
+    const geom=new THREE.BufferGeometry();
+    const mat=new THREE.MeshPhongMaterial({
+        vertexColors:true,
+        side:THREE.DoubleSide,
+        transparent:true,
+        opacity:0.85
+    });
+
+    const verts=[], cols=[], idx=[];
+    const R=2, seg=120, ring=60;
+
+    let l,m;
+    if(fractional.checked){
+        l=math.complex(+l_re.value||0,+l_im.value||0);
+        m=math.complex(+m_re.value||0,+m_im.value||0);
+    }else{
+        l=parseInt(lSel.value);
+        m=parseInt(mSel.value);
+    }
+
+    const H=window[harmonicType.value];
+    const mode=colorMode.value;
+    const scale = parseFloat(scaleSlider.value);
+
+    for(let i=0;i<=ring;i++){
+        let th=i/ring*Math.PI;
+        for(let j=0;j<=seg;j++){
+            let ph=j/seg*2*Math.PI;
+            let z=H(l,m,th,ph);
+
+            // apply exponential scaling
+            z = mul(z, math.exp(scale));
+
+            let v=0, c=[1,1,1];
+
+            switch(mode){
+                case "re":
+                    v=re(z);
+                    c=v>=0?[1,0,0]:[0,0,1];
+                    break;
+                case "re2":
+                    v=re(mul(z,conj(z)));
+                    c=[v,0,0];
+                    break;
+                case "im":
+                    v=im(z);
+                    c=v>=0?[0,1,0]:[0,0,1];
+                    break;
+                case "im2":
+                    v=im(z)*im(z);
+                    c=[0,v,0];
+                    break;
+                case "abs2":
+                    v=re(mul(z,conj(z)));
+                    c=[v,v,v];
+                    break;
+                case "arg":
+                    let a=Math.atan2(im(z),re(z));
+                    v=math.abs(z);
+                    c=hsv2rgb((a+Math.PI)/(2*Math.PI)*360,1,1);
+                    break;
+            }
+
+            let r=R*Math.abs(v);
+
+            verts.push(
+                r*Math.sin(th)*Math.cos(ph),
+                r*Math.sin(th)*Math.sin(ph),
+                r*Math.cos(th)
+            );
+            cols.push(c[0],c[1],c[2]);
+        }
+    }
+
+    for(let i=0;i<ring;i++){
+        for(let j=0;j<seg;j++){
+            let a=i*(seg+1)+j;
+            let b=a+seg+1;
+            idx.push(a,b,a+1,b,b+1,a+1);
+        }
+    }
+
+    geom.setIndex(idx);
+    geom.setAttribute("position",new THREE.Float32BufferAttribute(verts,3));
+    geom.setAttribute("color",new THREE.Float32BufferAttribute(cols,3));
+    geom.computeVertexNormals();
+
+    mesh=new THREE.Mesh(geom,mat);
+    scene.add(mesh);
+}
+
+// update button and slider
+update.onclick=createOrbital;
+scaleSlider.oninput=createOrbital;
+createOrbital();
+
+/* ---------- render ---------- */
+function anim(){
+    requestAnimationFrame(anim);
+    if(mesh){ mesh.rotation.y+=0.006; mesh.rotation.x+=0.003; }
+    renderer.render(scene,camera);
+}
+anim();
+
+onresize=()=>{
+    camera.aspect=innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+};
+</script>
+</body>
+</html>
