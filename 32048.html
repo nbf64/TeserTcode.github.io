@@ -301,7 +301,6 @@
         const {i, j} = empty[Math.floor(Math.random() * empty.length)];
         let val = currentLevel - difficulty + (Math.random() < 0.2 ? 1 : 0);
         board[i][j] = Math.min(10000, Math.max(-10000, val));
-        if (board[i][j] > currentLevel && board[i][j] !== 'e') currentLevel = board[i][j];
         return true;
     }
 
