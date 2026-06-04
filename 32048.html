@@ -390,13 +390,39 @@
         spawnRandomTile(); spawnRandomTile(); drawBoard();
     }
     function autoMove(){
-        if (!moveAndMerge('u')){
-            if (!moveAndMerge('l')){
-               if (!moveAndMerge('r')){
-                    moveAndMerge('d');
-               }
-            }
+        let preBoard = board;
+        let preScore = score;
+        let maxScoreGain = 0;
+        let moveMade = "";
+        moveAndMerge('u');
+        if (score - preScore > maxScoreGain){
+            maxScoreGain = score - preScore;
+            moveMade = 'u';
         }
+        board = preBoard;
+        score = preScore;
+        moveAndMerge('d');
+        if (score - preScore > maxScoreGain){
+            maxScoreGain = score - preScore;
+            moveMade = 'd';
+        }
+        board = preBoard;
+        score = preScore;
+        moveAndMerge('l');
+        if (score - preScore > maxScoreGain){
+            maxScoreGain = score - preScore;
+            moveMade = 'l';
+        }
+        board = preBoard;
+        score = preScore;
+        moveAndMerge('r');
+        if (score - preScore > maxScoreGain){
+            maxScoreGain = score - preScore;
+            moveMade = 'r';
+        }
+        board = preBoard;
+        score = preScore;
+        moveAndMerge(moveMade);
     }
     function toggleAutoPlay() {
         autoPlay = !autoPlay;
