@@ -243,7 +243,7 @@
         stats: document.getElementById('statsPanel'), autoBtn: document.getElementById('autoPlayBtn')
     };
 
-    function getTileSrc(exp) { return exp === 0 ? 'compressed/e.png' : `compressed/${Math.min(10000, Math.max(-10000, exp))}.png`; }
+    function getTileSrc(exp) { return exp === 'e' ? 'compressed/e.png' : `compressed/${Math.min(10000, Math.max(-10000, exp))}.png`; }
 
     function addScore(exp) {
         let e = exp;
@@ -295,7 +295,7 @@
 
     function spawnRandomTile() {
         let empty = [];
-        for (let i=0; i<gameRows; i++) for(let j=0; j<gameCols; j++) if(board[i][j] === 0) empty.push({i,j});
+        for (let i=0; i<gameRows; i++) for(let j=0; j<gameCols; j++) if(board[i][j] === 'e') empty.push({i,j});
         if(!empty.length) return false;
         const {i, j} = empty[Math.floor(Math.random() * empty.length)];
         let val = currentLevel - difficulty + (Math.random() < 0.2 ? 1 : 0);
@@ -307,7 +307,7 @@
     function isGameOver() {
         for(let i=0; i<gameRows; i++) {
             for(let j=0; j<gameCols; j++) {
-                if(board[i][j] === 0) return false;
+                if(board[i][j] === 'e') return false;
                 if(j+1<gameCols && board[i][j] === board[i][j+1]) return false;
                 if(i+1<gameRows && board[i][j] === board[i+1][j]) return false;
             }
@@ -325,7 +325,7 @@
         let events = [];
         for(let r=0; r<gameRows; r++) {
             for(let c=0; c<gameCols; c++) {
-                if(board[r][c] !== 0 && board[r][c] <= currentLevel - difficulty) {
+                if(board[r][c] !== 'e' && board[r][c] <= currentLevel - difficulty) {
                     events.push({r, c, type: eventType});
                 }
             }
@@ -355,7 +355,7 @@
         
         let moved = false, R = board.length, C = board[0].length;
         for(let i=0; i<R; i++) {
-            let row = board[i], f = row.filter(v => v !== 0);
+            let row = board[i], f = row.filter(v => v !== 'e');
             for(let k=f.length-1; k>0; k--) {
                 if(f[k] === f[k-1]) {
                     f[k]++; addScore(f[k]);
@@ -363,7 +363,7 @@
                     f[k-1] = 0; moved = true;
                 }
             }
-            let nr = f.filter(v => v !== 0);
+            let nr = f.filter(v => v !== 'e');
             while(nr.length < C) nr.unshift(0);
             if(row.join(',') !== nr.join(',')) moved = true;
             board[i] = nr;
@@ -385,7 +385,7 @@
     function resetGame(startLvl, diff, rows, cols) {
         if(autoPlay) toggleAutoPlay();
         gameRows = rows; gameCols = cols; currentLevel = startLvl; difficulty = diff;
-        board = Array(gameRows).fill().map(()=>Array(gameCols).fill(0));
+        board = Array(gameRows).fill().map(()=>Array(gameCols).fill('e'));
         scoreTally = {}; els.overlay.style.display = 'none'; els.winOverlay.style.display = 'none';
         spawnRandomTile(); spawnRandomTile(); drawBoard();
     }
