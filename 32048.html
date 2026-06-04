@@ -365,7 +365,7 @@
                 }
             }
             let nr = f.filter(v => v !== -10001);
-            while(nr.length < C) nr.unshift(0);
+            while(nr.length < C) nr.unshift(-10001);
             if(row.join(',') !== nr.join(',')) moved = true;
             board[i] = nr;
         }
