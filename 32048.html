@@ -333,7 +333,7 @@
         
         if (events.length > 0) {
             events.forEach(e => {
-                if (e.type === 'explode') board[e.r][e.c] = 0;
+                if (e.type === 'explode') board[e.r][e.c] = 'e';
                 else if (e.type === 'upgrade') {
                     board[e.r][e.c]++; 
                     if(board[e.r][e.c] > currentLevel) currentLevel = board[e.r][e.c];
