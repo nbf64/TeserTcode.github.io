@@ -429,7 +429,7 @@
         eventType = document.getElementById('eventTypeInput').value;
         els.stats.style.display = document.getElementById('showStatsToggle').checked ? 'block' : 'none';
         document.getElementById('settingsMenu').style.display = 'none';
-        resetGame(ns, Math.max(0, parseInt(document.getElementById('diffInput').value) || 2), nr, nc);
+        resetGame(ns, Math.max(0, parseInt(document.getElementById('diffInput').value)), nr, nc);
         if(autoPlay) { toggleAutoPlay(); toggleAutoPlay(); } // restart loop with new speed
     });
 
