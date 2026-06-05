@@ -389,40 +389,40 @@
         spawnRandomTile(); spawnRandomTile(); drawBoard();
     }
     function autoMove(){
-        var preBoard = board;
-        var preScore = scoreTally;
+        let preBoard = board.slice();
+        let preScore = Object.assign({}, scoreTally);
         var maxScoreGain = 0;
-        var moveMade = ['u','d','l','r'][Math.floor(Math.random()*4)];
+        var moveMade = '';
         moveAndMerge('u');
-        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) > maxScoreGain){
+        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain){
             maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
             moveMade = 'u';
         }
-        board = preBoard;
-        scoreTally = preScore;
+        board = preBoard.slice();
+        scoreTally = Object.assign({}, preScore);
         moveAndMerge('d');
-        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) > maxScoreGain){
+        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain){
             maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
             moveMade = 'd';
         }
-        board = preBoard;
-        scoreTally = preScore;
+        board = preBoard.slice();
+        scoreTally = Object.assign({}, preScore);
         moveAndMerge('l');
-        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) > maxScoreGain){
+        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain){
             maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
             moveMade = 'l';
         }
-        board = preBoard;
-        scoreTally = preScore;
+        board = preBoard.slice();
+        scoreTally = Object.assign({}, preScore);
         moveAndMerge('r');
-        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) > maxScoreGain){
+        if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain){
             maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
             moveMade = 'r';
         }
-        board = preBoard;
-        scoreTally = preScore;
-        console.log(moveMade);
-        console.log(maxScoreGain);
+        board = preBoard.slice();
+        scoreTally = Object.assign({}, preScore);
+        //console.log(moveMade);
+        //console.log(maxScoreGain);
         moveAndMerge(moveMade);
     }
     function toggleAutoPlay() {
