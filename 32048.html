@@ -193,7 +193,6 @@
 
 <div class="main-buttons">
     <button id="retryBtn">RETRY</button>
-    <button id="autoPlayBtn">AUTO OFF</button>
     <button id="settingsBtn">SETTINGS</button>
     <button id="saveBtn">SAVE</button>
     <button id="loadBtn">LOAD</button>
@@ -221,7 +220,6 @@
             <option value="none">NONE</option>
         </select>
     </div>
-    <div class="settings-option"><label>AUTO SPEED (ms)</label><input type="number" id="autoSpeedInput" value="150" min="1"></div>
     <div class="settings-option"><label>SHOW STATS</label><input type="checkbox" id="showStatsToggle" checked></div>
     <div class="settings-option">
         <button id="applySettingsBtn">APPLY & RESTART</button>
@@ -251,8 +249,7 @@ const els = {
     lvl: document.getElementById('levelVal'),
     diff: document.getElementById('diffVal'),
     stats: document.getElementById('statsPanel'),
-    autoBtn: document.getElementById('autoPlayBtn')
-};
+    };
 
 function getTileSrc(exp) {
     return exp === 'e' ? 'compressed/e.png' : `compressed/${Math.min(10000, Math.max(-10000, exp))}.png`;
@@ -445,58 +442,7 @@ function resetGame(startLvl, diff, rows, cols) {
     drawBoard();
 }
 
-function autoMove() {
-    var preBoard = board.slice();
-    var preScore = Object.assign({}, scoreTally);
-    var maxScoreGain = 0;
-    var moveMade = '';
-    moveAndMerge('u');
-    if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain) {
-        maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
-        moveMade = 'u';
-    }
-    board = preBoard.slice();
-    scoreTally = Object.assign({}, preScore);
-    moveAndMerge('d');
-    if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain) {
-        maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
-        moveMade = 'd';
-    }
-    board = preBoard.slice();
-    scoreTally = Object.assign({}, preScore);
-    moveAndMerge('l');
-    if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain) {
-        maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
-        moveMade = 'l';
-    }
-    board = preBoard.slice();
-    scoreTally = Object.assign({}, preScore);
-    moveAndMerge('r');
-    if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) >= maxScoreGain) {
-        maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
-        moveMade = 'r';
-    }
-    board = preBoard.slice();
-    scoreTally = Object.assign({}, preScore);
-    //console.log(moveMade);
-    //console.log(maxScoreGain);
-    moveAndMerge(moveMade);
-}
 
-function toggleAutoPlay() {
-    autoPlay = !autoPlay;
-    if (autoPlay) {
-        els.autoBtn.innerText = "AUTO ON";
-        els.autoBtn.style.background = "#ff4444";
-        autoInterval = setInterval(() => {
-            autoMove();
-        }, autoSpeed);
-    } else {
-        els.autoBtn.innerText = "AUTO OFF";
-        els.autoBtn.style.background = "#34d9d6";
-        clearInterval(autoInterval);
-    }
-}
 
 document.getElementById('saveBtn').addEventListener('click', () => {
     localStorage.setItem('10k_save', JSON.stringify({
@@ -533,7 +479,6 @@ document.getElementById('settingsBtn').addEventListener('click', () => {
     document.getElementById('startLevelInput').value = currentLevel;
     document.getElementById('diffInput').value = difficulty;
     document.getElementById('eventTypeInput').value = eventType;
-    document.getElementById('autoSpeedInput').value = autoSpeed;
     document.getElementById('showStatsToggle').checked = els.stats.style.display !== 'none';
     document.getElementById('settingsMenu').style.display = 'block';
 });
@@ -543,15 +488,10 @@ document.getElementById('applySettingsBtn').addEventListener('click', () => {
     let nc = Math.max(2, Math.min(100, parseInt(document.getElementById('colsInput').value) || 4));
     let nr = Math.max(2, Math.min(100, parseInt(document.getElementById('rowsInput').value) || 4));
     let ns = Math.max(-10000, parseInt(document.getElementById('startLevelInput').value) || -10000);
-    autoSpeed = Math.max(0, parseInt(document.getElementById('autoSpeedInput').value));
     eventType = document.getElementById('eventTypeInput').value;
     els.stats.style.display = document.getElementById('showStatsToggle').checked ? 'block' : 'none';
     document.getElementById('settingsMenu').style.display = 'none';
     resetGame(ns, Math.max(0, parseInt(document.getElementById('diffInput').value)), nr, nc);
-    if (autoPlay) {
-        toggleAutoPlay();
-        toggleAutoPlay();
-    } // restart loop with new speed
 });
 
 ['moveUp', 'moveDown', 'moveLeft', 'moveRight'].forEach(id => document.getElementById(id).addEventListener('click', () => moveAndMerge(id.replace('move', '').charAt(0).toLowerCase())));
