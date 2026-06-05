@@ -389,10 +389,10 @@
         spawnRandomTile(); spawnRandomTile(); drawBoard();
     }
     function autoMove(){
-        let preBoard = board;
-        let preScore = scoreTally;
-        let maxScoreGain = 0;
-        let moveMade = ['u','d','l','r'][Math.floor(Math.random()*4)];
+        var preBoard = board;
+        var preScore = scoreTally;
+        var maxScoreGain = 0;
+        var moveMade = ['u','d','l','r'][Math.floor(Math.random()*4)];
         moveAndMerge('u');
         if (parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore)) > maxScoreGain){
             maxScoreGain = parseFloat(getScoreString(scoreTally)) - parseFloat(getScoreString(preScore));
