@@ -420,15 +420,12 @@ function moveAndMerge(dir) {
 function checkState() {
     if (currentLevel >= 10000) {
         els.winOverlay.style.display = 'block';
-        if (autoPlay) toggleAutoPlay();
     } else if (isGameOver()) {
         els.overlay.style.display = 'block';
-        if (autoPlay) toggleAutoPlay();
     }
 }
 
 function resetGame(startLvl, diff, rows, cols) {
-    if (autoPlay) toggleAutoPlay();
     gameRows = rows;
     gameCols = cols;
     currentLevel = startLvl;
@@ -496,7 +493,6 @@ document.getElementById('applySettingsBtn').addEventListener('click', () => {
 
 ['moveUp', 'moveDown', 'moveLeft', 'moveRight'].forEach(id => document.getElementById(id).addEventListener('click', () => moveAndMerge(id.replace('move', '').charAt(0).toLowerCase())));
 document.getElementById('retryBtn').addEventListener('click', () => resetGame(currentLevel, difficulty, gameRows, gameCols));
-els.autoBtn.addEventListener('click', toggleAutoPlay);
 window.addEventListener('keydown', e => {
     if (document.getElementById('settingsMenu').style.display === 'block') return;
     const keys = {
